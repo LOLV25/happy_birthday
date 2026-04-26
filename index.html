@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Feliz Cumpleaños Mi Vida 🎂</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --pink1: #ff6b9d;
+        --pink2: #c94b9c;
+        --peach: #fda085;
+        --gold: #f9c74f;
+        --cream: #fff8f0;
+      }
+
+      html,
+      body {
+        width: 100%;
+        min-height: 100%;
+        font-family: "Nunito", sans-serif;
+        overflow-x: hidden;
+      }
+
+      /* Solución para que el confeti no bloquee los botones */
+      canvas {
+        pointer-events: none !important;
+      }
+
+      /* ══ LOADER ══ */
+      #loader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 28px;
+        background: linear-gradient(160deg, #ffc9a7 0%, #ff9a9e 50%, #fda085 100%);
+        transition: opacity 0.7s ease;
+      }
+
+      .loader-cake {
+        width: 110px;
+        height: 110px;
+        animation: cakeBounce 1.2s ease-in-out infinite;
+        filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.18));
+      }
+
+      @keyframes cakeBounce {
+        0%, 100% { transform: translateY(0) scale(1); }
+        50% { transform: translateY(-10px) scale(1.04); }
+      }
+
+      .loader-bar-wrap {
+        width: 220px;
+        background: rgba(255, 255, 255, 0.35);
+        border-radius: 100px;
+        height: 8px;
+        overflow: hidden;
+      }
+      .loader-bar-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #fff 0%, #ff7043 100%);
+        border-radius: 100px;
+        transition: width 0.08s linear;
+      }
+      .loader-text {
+        font-size: 0.92rem;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.9);
+        letter-spacing: 0.04em;
+      }
+
+      /* ══ APP ══ */
+      #app {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        width: 100%;
+        background: radial-gradient(ellipse at 50% 0%, #3b1a2e 0%, #1a0a0e 55%, #0e0608 100%);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .bg-particles {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+      }
+      .particle {
+        position: absolute;
+        border-radius: 50%;
+        animation: floatUp linear infinite;
+        opacity: 0;
+      }
+      @keyframes floatUp {
+        0% { transform: translateY(100vh) scale(0); opacity: 0; }
+        10% { opacity: 0.6; }
+        90% { opacity: 0.4; }
+        100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+      }
+
+      /* ══ SECCIÓN PRINCIPAL ══ */
+      .cake-section {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 60px 20px 20px;
+        width: 100%;
+        max-width: 480px;
+      }
+
+      .title-badge {
+        background: linear-gradient(135deg, rgba(255, 107, 157, 0.2), rgba(201, 75, 156, 0.1));
+        border: 1px solid rgba(255, 107, 157, 0.4);
+        border-radius: 100px;
+        padding: 6px 22px;
+        font-size: 0.72rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #ff9abf;
+        margin-bottom: 18px;
+        animation: fadeIn 0.8s ease both;
+        text-align: center;
+      }
+
+      .main-title {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(2.2rem, 9vw, 3.6rem);
+        font-weight: 700;
+        line-height: 1.1;
+        text-align: center;
+        margin-bottom: 6px;
+        background: linear-gradient(135deg, #ffd6a5, #ff9abf, #c84b9c);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: fadeIn 0.9s ease 0.1s both;
+      }
+
+      .main-age {
+        font-size: clamp(0.95rem, 3.5vw, 1.15rem);
+        color: rgba(255, 220, 190, 0.6);
+        margin-bottom: 32px;
+        text-align: center;
+        animation: fadeIn 1s ease 0.2s both;
+        padding: 0 10px;
+      }
+
+      /* ── Estilos para la imagen 3D ── */
+      .contenedor-3d {
+        perspective: 1000px;
+        width: 100%;
+        max-width: 520px;
+        height: 450px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        cursor: grab;
+        background-color: transparent;
+        overflow: visible;
+        position: relative;
+      }
+
+      .contenedor-3d:active {
+        cursor: grabbing;
+      }
+
+      #myImage {
+        width: 100%;
+        max-width: 280px; 
+        height: auto;
+        border-radius: 15px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        transform-style: preserve-3d;
+        transition: transform 0.1s ease-out; 
+        position: relative;
+        z-index: 3;
+      }
+
+      .instruccion {
+        color: #a38d98;
+        margin-top: 40px;
+        font-family: inherit;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+        text-align: center;
+      }
+
+      /* ── Estilos de Animación de Fiesta ── */
+      .floating-balloons-cluster {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        pointer-events: none; 
+        z-index: 0; 
+      }
+
+      .balloon {
+        position: absolute;
+        font-size: 3rem;
+        opacity: 0;
+        animation: floatUpFestive 25s ease-in-out infinite;
+      }
+
+      .b1 { left: 8%; animation-delay: 4s; color: #ff6b9d; }
+      .b2 { left: 85%; animation-delay: 2s; color: #ffd6a5; font-size: 2.5rem; }
+      .b3 { left: 15%; animation-delay: 4s; color: #f9c74f; font-size: 2rem; }
+      .b4 { left: 75%; animation-delay: 6s; color: #fda085; font-size: 2.8rem; }
+      .b5 { left: 45%; animation-delay: 8s; color: #c84b9c; }
+
+      @keyframes floatUpFestive {
+        0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+        10% { opacity: 0.8; }
+        90% { opacity: 0.8; }
+        100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+      }
+
+      /* Sombra corregida para estar siempre centrada */
+      .shadow-floor {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 230px;
+        height: 40px;
+        background: radial-gradient(ellipse at center, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 70%);
+        z-index: 2; 
+        filter: blur(5px);
+        pointer-events: none;
+      }
+
+      /* ══ PLAYER ══ */
+      .player-section {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 380px;
+        padding: 28px 20px 0;
+        animation: slideUp 0.8s ease 0.5s both;
+      }
+
+      @keyframes slideUp {
+        from { opacity: 0; transform: translateY(40px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .player-card {
+        background: linear-gradient(145deg, rgba(60, 20, 40, 0.92), rgba(40, 10, 25, 0.96));
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 107, 157, 0.2);
+        border-radius: 28px;
+        padding: 24px 22px 20px;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 150, 180, 0.08);
+      }
+
+      .player-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+      }
+
+      .player-header h2 {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(1.1rem, 5vw, 1.4rem);
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--gold), #ff9abf);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        width: 100%;
+      }
+
+      /* Balloons image player */
+      .balloons-wrap {
+        width: 100%;
+        border-radius: 16px;
+        overflow: hidden;
+        margin-bottom: 16px;
+        background: linear-gradient(135deg, #ffd6a5 0%, #ffb3d1 50%, #c84b9c 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 120px;
+      }
+
+      .balloons-img {
+        width: 100%;
+        border-radius: 16px;
+        display: block;
+        object-fit: cover;
+      }
+
+      .balloons-placeholder {
+        width: 100%;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      /* Album row */
+      .album-row {
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 14px;
+        padding: 10px 14px;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .album-art {
+        width: 60px;
+        height: 60px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #ffd6a5, #ff9abf, #c84b9c);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        flex-shrink: 0;
+        box-shadow: 0 6px 20px rgba(255, 107, 157, 0.3);
+        animation: albumSpin 8s linear infinite paused;
+      }
+      .album-art.playing { animation-play-state: running; }
+      @keyframes albumSpin { to { transform: rotate(360deg); } }
+
+      .album-info { flex: 1; min-width: 0; }
+      .album-name {
+        font-weight: 800;
+        font-size: 0.92rem;
+        color: #fff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .album-artist {
+        font-size: 0.75rem;
+        color: rgba(255, 200, 180, 0.55);
+        margin-top: 2px;
+      }
+
+      /* Progress */
+      .progress-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .progress-bar-bg {
+        flex: 1;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 100px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+      .progress-bar-fill {
+        height: 100%;
+        width: 0%;
+        border-radius: 100px;
+        background: linear-gradient(90deg, var(--pink1), var(--gold));
+        transition: width 0.5s linear;
+        pointer-events: none;
+      }
+      .progress-time {
+        font-size: 0.68rem;
+        color: rgba(255, 255, 255, 0.35);
+        white-space: nowrap;
+        min-width: 32px;
+      }
+
+      /* Controls */
+      .controls {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+        padding: 0 4px;
+      }
+
+      .ctrl-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: rgba(255, 200, 180, 0.55);
+        font-size: 1.1rem;
+        transition: color 0.2s, transform 0.15s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+      }
+      .ctrl-btn:hover { color: #fff; transform: scale(1.15); }
+
+      .ctrl-play {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--pink1), var(--pink2));
+        border: none;
+        cursor: pointer;
+        color: #fff;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 24px rgba(255, 107, 157, 0.4);
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .ctrl-play:hover {
+        transform: scale(1.08);
+        box-shadow: 0 12px 32px rgba(255, 107, 157, 0.6);
+      }
+
+      .volume-row { display: flex; align-items: center; gap: 8px; }
+      .volume-row span { font-size: 0.8rem; color: rgba(255, 180, 150, 0.45); }
+      .volume-row input { flex: 1; accent-color: #ff6b9d; height: 3px; cursor: pointer; }
+
+      /* ══ MESSAGE ══ */
+      .message-section {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 380px;
+        padding: 28px 20px 80px;
+      }
+
+      .message-card {
+        background: linear-gradient(145deg, rgba(60, 20, 40, 0.88), rgba(40, 10, 25, 0.92));
+        border: 1px solid rgba(255, 107, 157, 0.15);
+        border-radius: 24px;
+        padding: 28px 24px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      }
+
+      .message-card p {
+        font-size: 0.97rem;
+        line-height: 1.85;
+        color: rgba(255, 235, 220, 0.82);
+        margin-bottom: 18px;
+        text-align: justify;
+      }
+      .message-card p:last-child { margin-bottom: 0; }
+      .message-card p strong { color: #ff9abf; font-weight: 800; }
+      .message-card .signature {
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-size: 1.05rem;
+        color: rgba(255, 180, 150, 0.7);
+        text-align: right;
+        margin-top: 15px;
+      }
+
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+      /* ══ MEDIA QUERIES PARA RESPONSIVIDAD ══ */
+      @media (max-width: 480px) {
+        .cake-section { padding-top: 40px; }
+        .contenedor-3d { height: 380px; }
+        #myImage { max-width: 240px; }
+        .shadow-floor { width: 200px; }
+        .instruccion { margin-top: 20px; }
+      }
+
+      @media (max-width: 400px) {
+        .cake-section, .player-section, .message-section { padding-left: 15px; padding-right: 15px; }
+        .contenedor-3d { height: 320px; }
+        #myImage { max-width: 200px; }
+        .shadow-floor { width: 160px; height: 30px; }
+        .player-card, .message-card { padding: 20px 16px; }
+        .balloon { font-size: 2.2rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loader">
+      <svg class="loader-cake" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="48" y="8" width="4" height="14" rx="2" fill="#ffd6a5" />
+        <ellipse cx="50" cy="7" rx="3" ry="5" fill="#ff9a3c" opacity="0.9" />
+        <ellipse cx="50" cy="5" rx="2" ry="3.5" fill="#fff176" />
+        <ellipse cx="50" cy="32" rx="22" ry="6" fill="#ff9abf" />
+        <rect x="28" y="26" width="44" height="12" fill="#ff6b9d" />
+        <ellipse cx="50" cy="26" rx="22" ry="6" fill="#ffb3d1" />
+        <path d="M28 30 Q32 37 36 30 Q40 37 44 30 Q48 37 52 30 Q56 37 60 30 Q64 37 68 30 Q72 37 72 30" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <ellipse cx="50" cy="52" rx="32" ry="8" fill="#c94b9c" />
+        <rect x="18" y="44" width="64" height="18" fill="#e0609e" />
+        <ellipse cx="50" cy="44" rx="32" ry="8" fill="#f4a0cc" />
+        <path d="M18 50 Q23 59 28 50 Q33 59 38 50 Q43 59 48 50 Q53 59 58 50 Q63 59 68 50 Q73 59 78 50 Q82 59 82 50" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <ellipse cx="50" cy="70" rx="36" ry="8" fill="#ff7043" opacity="0.9" />
+        <rect x="14" y="64" width="72" height="8" rx="4" fill="#ff5722" />
+        <ellipse cx="50" cy="64" rx="36" ry="8" fill="#ff8a65" />
+        <circle cx="36" cy="56" r="3" fill="#ffd6a5" />
+        <circle cx="50" cy="56" r="3" fill="#ffd6a5" />
+        <circle cx="64" cy="56" r="3" fill="#ffd6a5" />
+        <circle cx="40" cy="36" r="2.5" fill="#fff" />
+        <circle cx="60" cy="36" r="2.5" fill="#fff" />
+      </svg>
+      <div class="loader-bar-wrap">
+        <div class="loader-bar-fill" id="loaderBar"></div>
+      </div>
+      <div class="loader-text" id="loaderText">Cargando sorpresas... 0%</div>
+    </div>
+
+    <div id="app">
+      <div class="bg-particles" id="particles"></div>
+
+      <section class="cake-section celebratory-context">
+        <div class="title-badge">✦ 28 de Abril · 22 Años ✦</div>
+        <h1 class="main-title">¡Feliz Cumpleaños,<br />Amor! 🎂</h1>
+        <p class="main-age">Hoy cumples 22 años de ser lo más bonito de mi vida</p>
+
+        <div id="imageWrap" class="contenedor-3d animated-party-view">
+          <div class="floating-balloons-cluster">
+            <span class="balloon b1">🎈</span>
+            <span class="balloon b2">💖</span>
+            <span class="balloon b3">✨</span>
+            <span class="balloon b4">🎁</span>
+            <span class="balloon b5">🎈</span>
+          </div>
+
+          <img id="myImage" src="dalis.png" alt="Mi imagen 3D" />
+
+          <div class="shadow-floor"></div>
+          <p class="instruccion">✦ arrastra para girar la foto ✦</p>
+        </div>
+      </section>
+
+      <section class="player-section">
+        <div class="player-card">
+          <div class="player-header">
+            <div style="display: flex; align-items: center; gap: 8px; justify-content: center; width: 100%;">
+              <span style="font-size: 1.3rem">👑</span>
+              <h2>¡Feliz Cumpleaños Cielito!</h2>
+              <span style="font-size: 1.3rem">🎂</span>
+            </div>
+          </div>
+
+          <div class="balloons-wrap">
+            <img class="balloons-img" src="globos.png" alt="Globos de cumpleaños" onerror="this.style.display = 'none'; document.getElementById('balloonsFallback').style.display = 'flex';" />
+            <div class="balloons-placeholder" id="balloonsFallback" style="display: none">
+              <span class="balloon">🎈</span>
+              <span class="balloon">🎀</span>
+              <span class="balloon">🎉</span>
+              <span class="balloon">🎊</span>
+              <span class="balloon">🎈</span>
+            </div>
+          </div>
+
+          <div class="album-row">
+            <div class="album-art" id="albumArt">🎂</div>
+            <div class="album-info">
+              <div class="album-name">Amor de mi vida 💕</div>
+              <div class="album-artist">Para ti nena, con amor 👉👈💌</div>
+            </div>
+          </div>
+
+          <div class="progress-wrap">
+            <span class="progress-time" id="timeElapsed">0:00</span>
+            <div class="progress-bar-bg" id="progressBg">
+              <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <span class="progress-time" id="timeDuration">0:00</span>
+          </div>
+
+          <div class="controls">
+            <button class="ctrl-btn" id="btnShuffle">🔀</button>
+            <button class="ctrl-btn" id="btnPrev">⏮</button>
+            <button class="ctrl-play" id="btnPlay">▶</button>
+            <button class="ctrl-btn" id="btnNext">⏭</button>
+            <button class="ctrl-btn" id="btnRepeat">🔁</button>
+          </div>
+
+          <audio id="miAudio" src="Scott.mp3" preload="metadata"></audio>
+
+          <div class="volume-row">
+            <span>🔈</span>
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.8" />
+            <span>🔊</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="message-section">
+        <div class="message-card">
+          <p>
+            🎉✨ <strong>Hoy es un día muy especial</strong>, un día para celebrar la vida, la alegría y todo lo que eres. 🌈 Quiero que sepas que cada momento junto a ti es un regalo que atesoro con todo mi corazón.
+          </p>
+          <p>
+            Hoy cumples <strong>22 años</strong>, y con cada año que pase te veré crecer, brillar y convertirte en la mujer más increíble que conozco. Tu sonrisa tiene el poder de iluminar hasta el día más gris, y tu presencia hace que todo tenga más sentido.
+          </p>
+          <p>
+            💕 Me enamoré de tu forma de reír, de cómo te apasionas por lo que amas, de la ternura con la que tratas a todos y de tu fuerza cuando la vida se pone difícil. Me enamoré de ti entera, de todo lo que eres y de todo lo que estás construyendo.
+          </p>
+          <p>
+            Gracias por elegirme cada día. Gracias por dejarme ser parte de tu historia. Gracias por los abrazos, las risas, los momentos de calma y los de locura. <strong>Gracias por existir.</strong>
+          </p>
+          <p>
+            🌷 En este día tan especial, lo único que quiero es que sepas que eres amada de una forma que no caben en palabras. Que hoy y siempre voy a estar aquí, aplaudiendo todo lo que hagas, sosteniéndote cuando lo necesites y amándote sin condiciones.
+          </p>
+          <p>
+            Que este año que comienza esté lleno de todo lo que mereces: <strong>felicidad, salud, sueños cumplidos y mucho, mucho amor.</strong> 🎀✨
+          </p>
+          <p>
+            💫 Feliz cumpleaños, mi amor. Eres mi lugar favorito en el mundo.
+          </p>
+          <p class="signature">Con todo mi amor, Tu novio Luis Olvera 🥰💕</p>
+          <p class="signature">Te amo mi vida 🥺👉👈💕</p>
+
+        </div>
+      </section>
+    </div>
+
+    <script>
+      (function () {
+        const bar = document.getElementById("loaderBar");
+        const text = document.getElementById("loaderText");
+        const messages = [
+          "Preparando una sorpresa...",
+          "Inflando globos...",
+          "Acomodando los regalos...",
+          "Casi listo...",
+          "Cargando la fiesta...",
+        ];
+        let progress = 0;
+
+        const interval = setInterval(() => {
+          progress += Math.random() * 3.5 + 1;
+          if (progress >= 100) progress = 100;
+          bar.style.width = progress + "%";
+          const idx = Math.min(Math.floor(progress / 22), messages.length - 1);
+          text.textContent = messages[idx] + " " + Math.floor(progress) + "%";
+
+          if (progress >= 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+              const loader = document.getElementById("loader");
+              loader.style.opacity = "0";
+              setTimeout(() => {
+                loader.style.display = "none";
+                const app = document.getElementById("app");
+                app.style.display = "flex";
+                initParticles();
+                initPlayer(); // Se eliminó initCake() que causaba el error
+                setTimeout(launchEntryConfetti, 600);
+              }, 700);
+            }, 400);
+          }
+        }, 60);
+      })();
+
+      function initParticles() {
+        const container = document.getElementById("particles");
+        const colors = ["#ff9abf", "#ffd6a5", "#ff6b9d", "#fda085", "#f9c74f", "#c84b9c"];
+        for (let i = 0; i < 28; i++) {
+          const p = document.createElement("div");
+          p.className = "particle";
+          const size = Math.random() * 6 + 3;
+          p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random() * 100}%;background:${colors[Math.floor(Math.random() * colors.length)]};animation-duration:${Math.random() * 12 + 8}s;animation-delay:${Math.random() * 10}s;`;
+          container.appendChild(p);
+        }
+      }
+
+      /* ── 3D para la imagen ── */
+      const wrap = document.getElementById("imageWrap");
+      const img = document.getElementById("myImage");
+
+      let isDragging = false;
+      let startX, startY;
+      let rotX = 0, rotY = 0;
+
+      const onDragStart = (x, y) => {
+        isDragging = true;
+        startX = x;
+        startY = y;
+        img.style.transition = "none"; 
+      };
+
+      const onDragMove = (x, y) => {
+        if (!isDragging) return;
+        const deltaX = x - startX;
+        const deltaY = y - startY;
+        rotY += deltaX * 0.3;
+        rotX -= deltaY * 0.3;
+        rotX = Math.max(-45, Math.min(45, rotX));
+        img.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+        startX = x;
+        startY = y;
+      };
+
+      const onDragEnd = () => {
+        isDragging = false;
+        img.style.transition = "transform 0.5s ease-out"; 
+      };
+
+      wrap.addEventListener("mousedown", (e) => onDragStart(e.clientX, e.clientY));
+      window.addEventListener("mousemove", (e) => onDragMove(e.clientX, e.clientY));
+      window.addEventListener("mouseup", onDragEnd);
+
+      wrap.addEventListener("touchstart", (e) => onDragStart(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+      window.addEventListener("touchmove", (e) => onDragMove(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+      window.addEventListener("touchend", onDragEnd);
+
+      /* ── Reproductor de Música ── */
+      function initPlayer() {
+        const audio = document.getElementById("miAudio");
+        let isPlaying = false, raf = null;
+
+        const btnPlay = document.getElementById("btnPlay");
+        const progressFill = document.getElementById("progressFill");
+        const progressBg = document.getElementById("progressBg");
+        const timeElapsed = document.getElementById("timeElapsed");
+        const timeDuration = document.getElementById("timeDuration");
+        const albumArt = document.getElementById("albumArt");
+        const volumeSlider = document.getElementById("volumeSlider");
+
+        audio.volume = parseFloat(volumeSlider.value);
+
+        const fmt = (s) => {
+          if (isNaN(s)) return "0:00";
+          const m = Math.floor(s / 60);
+          return `${m}:${Math.floor(s % 60).toString().padStart(2, "0")}`;
+        };
+
+        audio.addEventListener("loadedmetadata", () => {
+          timeDuration.textContent = fmt(audio.duration);
+        });
+
+        const startPlay = () => {
+          audio.play().catch(() => {});
+          isPlaying = true;
+          btnPlay.textContent = "⏸";
+          albumArt.classList.add("playing");
+
+          const tick = () => {
+            const pct = (audio.currentTime / (audio.duration || 1)) * 100;
+            progressFill.style.width = pct + "%";
+            timeElapsed.textContent = fmt(audio.currentTime);
+            raf = requestAnimationFrame(tick);
+          };
+          tick();
+        };
+
+        const pausePlay = () => {
+          audio.pause();
+          isPlaying = false;
+          btnPlay.textContent = "▶";
+          albumArt.classList.remove("playing");
+          cancelAnimationFrame(raf);
+        };
+
+        audio.addEventListener("ended", () => {
+          isPlaying = false;
+          btnPlay.textContent = "▶";
+          albumArt.classList.remove("playing");
+          cancelAnimationFrame(raf);
+        });
+
+        btnPlay.addEventListener("click", () => {
+          isPlaying ? pausePlay() : startPlay();
+        });
+
+        progressBg.addEventListener("click", (e) => {
+          const rect = progressBg.getBoundingClientRect();
+          audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+        });
+
+        volumeSlider.addEventListener("input", () => {
+          audio.volume = parseFloat(volumeSlider.value);
+        });
+
+        document.getElementById("btnRepeat").addEventListener("click", () => {
+          audio.currentTime = 0;
+          if (!isPlaying) startPlay();
+        });
+      }
+
+      function launchEntryConfetti() {
+        const colors = ["#ff6b9d", "#ffd6a5", "#f9c74f", "#c84b9c", "#ffffff", "#fda085"];
+        confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors });
+        
+        setTimeout(() => {
+          confetti({ particleCount: 60, angle: 60, spread: 55, origin: { x: 0 }, colors });
+          confetti({ particleCount: 60, angle: 120, spread: 55, origin: { x: 1 }, colors });
+        }, 400);
+      }
+    </script>
+  </body>
+</html>
