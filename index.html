@@ -38,7 +38,6 @@
         pointer-events: none !important;
       }
 
-      /* ══ LOADER ══ */
       #loader {
         position: fixed;
         inset: 0;
@@ -85,7 +84,6 @@
         letter-spacing: 0.04em;
       }
 
-      /* ══ APP ══ */
       #app {
         display: none;
         flex-direction: column;
@@ -117,7 +115,6 @@
         100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
       }
 
-      /* ══ SECCIÓN PRINCIPAL ══ */
       .cake-section {
         position: relative;
         z-index: 2;
@@ -237,7 +234,6 @@
         100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
       }
 
-      /* Sombra corregida para estar siempre centrada */
       .shadow-floor {
         position: absolute;
         bottom: 0;
@@ -251,7 +247,6 @@
         pointer-events: none;
       }
 
-      /* ══ PLAYER ══ */
       .player-section {
         position: relative;
         z-index: 2;
@@ -294,7 +289,6 @@
         width: 100%;
       }
 
-      /* Balloons image player */
       .balloons-wrap {
         width: 100%;
         border-radius: 16px;
@@ -323,7 +317,6 @@
         gap: 8px;
       }
 
-      /* Album row */
       .album-row {
         background: rgba(255, 255, 255, 0.06);
         border-radius: 14px;
@@ -365,7 +358,6 @@
         margin-top: 2px;
       }
 
-      /* Progress */
       .progress-wrap {
         display: flex;
         align-items: center;
@@ -396,7 +388,6 @@
         min-width: 32px;
       }
 
-      /* Controls */
       .controls {
         display: flex;
         align-items: center;
@@ -444,7 +435,6 @@
       .volume-row span { font-size: 0.8rem; color: rgba(255, 180, 150, 0.45); }
       .volume-row input { flex: 1; accent-color: #ff6b9d; height: 3px; cursor: pointer; }
 
-      /* ══ MESSAGE ══ */
       .message-section {
         position: relative;
         z-index: 2;
@@ -481,7 +471,6 @@
 
       @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-      /* ══ MEDIA QUERIES PARA RESPONSIVIDAD ══ */
       @media (max-width: 480px) {
         .cake-section { padding-top: 40px; }
         .contenedor-3d { height: 380px; }
